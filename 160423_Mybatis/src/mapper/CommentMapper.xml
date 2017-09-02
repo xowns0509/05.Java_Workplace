@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="mapper.CommentMapper">
+
+	<!-- 디비컬럼과 VO클래스의 변수명이 다른 경우   <result/> -->
+	<resultMap type = "model.Comment" id = "commentMap">
+		<id column = "comment_no" property = "commentNo"></id>
+		<result column = "user_id" property = "userId"/>
+		<result column = "comment_content" property = "commentContent"/>
+		<result column = "reg_date" property = "regDate"/>
+		<!-- id는 인덱스의 개념과 비슷하며 먼저 메모리에 올려놓기 때문에 좀더 빠름. <result/> -->
+	</resultMap>
+	
+	<select id = "selectComment" parameterType = "hashmap" resultMap="commentMap">
+		select * from comment_tab
+		<where> <!--  동적인 sql구문 -->
+			<if test = "userId != null">
+			user_id = #{userId}
+			</if>
+		</where>
+	</select>
+	
+
+   <select id="selectByPK" parameterType="long" resultMap="commentMap">
+      select * from comment_tab
+	 <![CDATA[ where comment_no > 10 ]]>
+	 <!-- where comment_no #{comment_no}-->
+   </select>
+   
+   <insert id = "insertComment" parameterType="model.Comment">
+	INSERT INTO comment_tab(comment_no, user_id, comment_content, reg_date)
+	VALUES (#{commentNo}, #{userId}, #{commentContent}, #{regDate})
+	</insert>
+
+</mapper>
